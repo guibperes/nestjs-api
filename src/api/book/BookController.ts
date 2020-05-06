@@ -26,14 +26,14 @@ export class BookController {
 
   @Put(':id')
   async updateById(
-    @Param('id', new ParseIntPipe()) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() bookDTO: BookUpdateDTO,
   ): Promise<Book> {
     return this.bookService.updateById(id, bookDTO);
   }
 
   @Delete(':id')
-  async deleteById(@Param('id', new ParseIntPipe()) id: number): Promise<void> {
+  async deleteById(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.bookService.deleteById(id);
   }
 
@@ -43,7 +43,7 @@ export class BookController {
   }
 
   @Get(':id')
-  async findById(@Param('id', new ParseIntPipe()) id: number): Promise<Book> {
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<Book> {
     return this.bookService.findById(id);
   }
 }
