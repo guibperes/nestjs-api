@@ -33,6 +33,7 @@
     "import/extensions": ["error", { "ts": "never" }],
     "class-methods-use-this": "off",
     "no-unused-vars": "off",
-    "lines-between-class-members": "off"
+    "lines-between-class-members": "off",
+    "max-classes-per-file": "off"
   }
 }

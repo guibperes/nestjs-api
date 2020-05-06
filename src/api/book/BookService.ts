@@ -1,30 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Book } from './Book';
-import { BookDTO } from './BookDTO';
+import { BookCreateDTO, BookUpdateDTO } from './BookDTO';
 
-const books: Book[] = [];
+let books: Book[] = [];
 
 @Injectable()
 export class BookService {
-  async create(bookDTO: BookDTO): Promise<Book> {
+  async create(bookDTO: BookCreateDTO): Promise<Book> {
     const book = Book.buildFromDTO(bookDTO);
     books.push(book);
 
     return book;
   }
 
-  async updateById(id: number, bootDTO: BookDTO): Promise<Book> {
-    return null;
+  async updateById(id: number, bookDTO: BookUpdateDTO): Promise<Book> {
+    const savedBook = books.filter(book => book.id === id)[0];
+
+    if (!savedBook) {
+      throw new HttpException(
+        'Cannot find book with provided id',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const updatedBook = { ...savedBook, ...bookDTO };
+    const bookIndex = books.findIndex(book => book.id === id);
+    books[bookIndex] = updatedBook;
+
+    return updatedBook;
   }
 
-  async deleteById(id: number): Promise<void> {}
+  async deleteById(id: number): Promise<void> {
+    const savedBook = await this.findById(id);
 
-  async getAll(): Promise<Book[]> {
-    return null;
+    books = books.filter(book => book.id !== savedBook.id);
   }
 
-  async getById(id: number): Promise<Book> {
-    return null;
+  async findAll(): Promise<Book[]> {
+    return books;
+  }
+
+  async findById(id: number): Promise<Book> {
+    const savedBook = books.filter(book => book.id === id)[0];
+
+    if (!savedBook) {
+      throw new HttpException(
+        'Cannot find book with provided id',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return savedBook;
   }
 }
