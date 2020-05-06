@@ -14,7 +14,7 @@ import {
 import { Book } from './Book';
 import { BookDTO } from './BookDTO';
 
-const books: Book[] = [];
+let books: Book[] = [];
 
 @Controller('books')
 export class BookController {
@@ -27,10 +27,10 @@ export class BookController {
   }
 
   @Put(':id')
-  updateById(
+  async updateById(
     @Param('id', new ParseIntPipe()) id: number,
     @Body() bookDTO: BookDTO,
-  ): Book {
+  ): Promise<Book> {
     const book = books.filter(bookData => bookData.id === id)[0];
 
     if (!book) {
@@ -48,7 +48,18 @@ export class BookController {
   }
 
   @Delete(':id')
-  deleteById() {}
+  async deleteById(@Param('id', new ParseIntPipe()) id: number): Promise<void> {
+    const book = books.filter(bookData => bookData.id === id)[0];
+
+    if (!book) {
+      throw new HttpException(
+        'Cannot find book with provided id',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    books = books.filter(bookData => bookData.id !== id);
+  }
 
   @Get()
   async findAll(): Promise<Book[]> {
