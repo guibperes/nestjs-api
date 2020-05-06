@@ -30,6 +30,7 @@
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off",
+    "import/extensions": ["error", { "ts": "never" }],
     "class-methods-use-this": "off",
     "no-unused-vars": "off"
   }
