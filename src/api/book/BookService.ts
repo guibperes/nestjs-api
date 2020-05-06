@@ -8,7 +8,10 @@ const books: Book[] = [];
 @Injectable()
 export class BookService {
   async create(bookDTO: BookDTO): Promise<Book> {
-    return null;
+    const book = Book.buildFromDTO(bookDTO);
+    books.push(book);
+
+    return book;
   }
 
   async updateById(id: number, bootDTO: BookDTO): Promise<Book> {

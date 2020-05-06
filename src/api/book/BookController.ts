@@ -9,21 +9,23 @@ import {
   ParseIntPipe,
   HttpException,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 
 import { Book } from './Book';
 import { BookDTO } from './BookDTO';
+import { BookService } from './BookService';
 
 let books: Book[] = [];
 
 @Controller('books')
 export class BookController {
+  @Inject()
+  private readonly bookService: BookService;
+
   @Post()
   async create(@Body() bookDTO: BookDTO): Promise<Book> {
-    const book = Book.buildFromDTO(bookDTO);
-
-    books.push(book);
-    return book;
+    return this.bookService.create(bookDTO);
   }
 
   @Put(':id')
