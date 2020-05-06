@@ -1,9 +1,20 @@
-import { Controller, Post, Get, Put, Delete, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Delete,
+  Body,
+  Param,
+  ParseIntPipe,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 
 import { Book } from './Book';
 import { BookDTO } from './BookDTO';
 
-const books = [];
+const books: Book[] = [];
 
 @Controller('books')
 export class BookController {
@@ -24,12 +35,21 @@ export class BookController {
   deleteById() {}
 
   @Get()
-  findAll(): Book {
-    return null;
+  async findAll(): Promise<Book[]> {
+    return books;
   }
 
   @Get(':id')
-  findById(): Book {
-    return null;
+  async findById(@Param('id', new ParseIntPipe()) id: number): Promise<Book> {
+    const book = books.filter(bookData => bookData.id === id)[0];
+
+    if (!book) {
+      throw new HttpException(
+        'Cannot find book with provided id',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return book;
   }
 }
