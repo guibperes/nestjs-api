@@ -34,7 +34,7 @@ export class BookController {
 
   @Delete(':id')
   async deleteById(@Param('id', new ParseIntPipe()) id: number): Promise<void> {
-    this.bookService.deleteById(id);
+    return this.bookService.deleteById(id);
   }
 
   @Get()

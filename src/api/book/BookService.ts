@@ -1,5 +1,6 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
+import { EntityNotFoundException } from '../../exceptions';
 import { Book } from './Book';
 import { BookCreateDTO, BookUpdateDTO } from './BookDTO';
 
@@ -38,10 +39,7 @@ export class BookService {
     const savedBook = books.filter(book => book.id === id)[0];
 
     if (!savedBook) {
-      throw new HttpException(
-        'Cannot find book with provided id',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new EntityNotFoundException('Book');
     }
 
     return savedBook;
