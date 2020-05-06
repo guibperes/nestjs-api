@@ -27,8 +27,24 @@ export class BookController {
   }
 
   @Put(':id')
-  updateById(): Book {
-    return null;
+  updateById(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() bookDTO: BookDTO,
+  ): Book {
+    const book = books.filter(bookData => bookData.id === id)[0];
+
+    if (!book) {
+      throw new HttpException(
+        'Cannot find book with provided id',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const updatedBook = { ...book, ...bookDTO };
+    const bookIndex = books.findIndex(bookData => bookData.id === id);
+    books[bookIndex] = updatedBook;
+
+    return updatedBook;
   }
 
   @Delete(':id')
