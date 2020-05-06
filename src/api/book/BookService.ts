@@ -15,14 +15,7 @@ export class BookService {
   }
 
   async updateById(id: number, bookDTO: BookUpdateDTO): Promise<Book> {
-    const savedBook = books.filter(book => book.id === id)[0];
-
-    if (!savedBook) {
-      throw new HttpException(
-        'Cannot find book with provided id',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const savedBook = await this.findById(id);
 
     const updatedBook = { ...savedBook, ...bookDTO };
     const bookIndex = books.findIndex(book => book.id === id);
