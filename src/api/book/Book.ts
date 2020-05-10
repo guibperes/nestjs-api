@@ -1,21 +1,32 @@
-import { BookCreateDTO } from './BookDTO';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+import { BookCreateDTO, BookUpdateDTO } from './BookDTO';
+
+@Entity()
 export class Book {
+  @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
   title: string;
+
+  @Column()
   description: string;
+
+  @Column()
   pages: number;
 
-  constructor(id: number, title: string, description: string, pages: number) {
-    this.id = id;
+  constructor(title: string, description: string, pages: number) {
     this.title = title;
     this.description = description;
     this.pages = pages;
   }
 
-  static buildFromDTO({ title, description, pages }: BookCreateDTO) {
-    const id = Math.floor(Math.random() * 100);
+  static buildFromDTO({ title, description, pages }: BookCreateDTO): Book {
+    return new Book(title, description, pages);
+  }
 
-    return new Book(id, title, description, pages);
+  mergeFromDTO({ title, description, pages }: BookUpdateDTO): Book {
+    return { ...this, title, description, pages };
   }
 }

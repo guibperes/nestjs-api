@@ -1,47 +1,44 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { EntityNotFoundException } from '../../exceptions';
 import { Book } from './Book';
+import { BookRepository } from './BookRepository';
 import { BookCreateDTO, BookUpdateDTO } from './BookDTO';
-
-let books: Book[] = [];
 
 @Injectable()
 export class BookService {
-  async create(bookDTO: BookCreateDTO): Promise<Book> {
-    const book = Book.buildFromDTO(bookDTO);
-    books.push(book);
+  @InjectRepository(Book)
+  private readonly repo: BookRepository;
 
-    return book;
+  async create(bookDTO: BookCreateDTO): Promise<Book> {
+    return this.repo.save(Book.buildFromDTO(bookDTO));
   }
 
   async updateById(id: number, bookDTO: BookUpdateDTO): Promise<Book> {
-    const savedBook = await this.findById(id);
+    const book = await this.findById(id);
+    const newBook = book.mergeFromDTO(bookDTO);
 
-    const updatedBook = { ...savedBook, ...bookDTO };
-    const bookIndex = books.findIndex(book => book.id === id);
-    books[bookIndex] = updatedBook;
-
-    return updatedBook;
+    return this.repo.save(newBook);
   }
 
   async deleteById(id: number): Promise<void> {
-    const savedBook = await this.findById(id);
+    const book = await this.findById(id);
 
-    books = books.filter(book => book.id !== savedBook.id);
+    this.repo.delete(book);
   }
 
   async findAll(): Promise<Book[]> {
-    return books;
+    return this.repo.find();
   }
 
   async findById(id: number): Promise<Book> {
-    const savedBook = books.filter(book => book.id === id)[0];
+    const book = await this.repo.findOne(id);
 
-    if (!savedBook) {
+    if (!book) {
       throw new EntityNotFoundException('Book');
     }
 
-    return savedBook;
+    return book;
   }
 }
