@@ -1,12 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
+import { BaseEntity } from '../../base';
 import { BookCreateDTO, BookUpdateDTO } from './BookDTO';
 
 @Entity()
-export class Book {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Book extends BaseEntity {
   @Column()
   title: string;
 
@@ -17,6 +15,8 @@ export class Book {
   pages: number;
 
   constructor(title: string, description: string, pages: number) {
+    super();
+
     this.title = title;
     this.description = description;
     this.pages = pages;
