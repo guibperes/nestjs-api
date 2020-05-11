@@ -25,7 +25,7 @@ export class BookService {
   async deleteById(id: number): Promise<void> {
     const book = await this.findById(id);
 
-    this.repo.delete(book);
+    await this.repo.delete(book.id);
   }
 
   async findAll(): Promise<Book[]> {
